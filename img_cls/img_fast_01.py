@@ -46,9 +46,9 @@ train_mattes = np.array(train_mattes)
 test_images = np.array(test_images)
 test_mattes = np.array(test_mattes)
 
-from skimage import color
-train_mattes = np.array([color.gray2rgb(img) for img in train_mattes])
-test_mattes = np.array([color.gray2rgb(img) for img in test_mattes])
+
+train_mattes = np.array([img.reshape((100, 75, 1)) for img in train_mattes])
+test_mattes = np.array([img.reshape((100, 75, 1)) for img in test_mattes])
 
 
 from keras.layers import Dense, Input, Conv2D, UpSampling2D, Flatten, Reshape
