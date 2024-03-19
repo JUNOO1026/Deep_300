@@ -10,8 +10,9 @@ from torchvision import transforms,datasets
 from model import UNet
 from dataset import Dataset
 
+
 lr = 1e-3
-batch_size = 4
+batch_size = 2
 num_epoch = 100
 
 data_dir = 'C:/Users/jun/Downloads/dataset/'
@@ -21,15 +22,19 @@ log_dir = 'C:/Users/jun/Downloads/dataset/log/'
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-transform = transforms.Compose([transforms.Normalize(mean=0.5, std=0.5), transforms.ToTensor()])
-dataset_train = Dataset(data_dir=os.path.join(data_dir,'training'),transform=transform)
+transform = transforms.Compose([transforms.ToTensor()])
+dataset_train = Dataset(data_dir=os.path.join(data_dir, 'training'), transform=transform)
 
 # 불러온 데이터셋, 배치 size줘서 DataLoader 해주기
 loader_train = DataLoader(dataset_train, batch_size = batch_size, shuffle=True)
 
+
 # val set도 동일하게 진행
 dataset_val = Dataset(data_dir=os.path.join(data_dir,'testing'),transform = transform)
 loader_val = DataLoader(dataset_val, batch_size=batch_size , shuffle=True)
+
+print(len(dataset_train), len(loader_train))
+print(len(dataset_val), len(loader_val))
 
 # 네트워크 불러오기
 net = UNet().to(device) # device : cpu or gpu
@@ -94,8 +99,8 @@ for epoch in range(start_epoch + 1, num_epoch + 1):
 
     for batch, data in enumerate(loader_train, 1):  # 1은 뭐니 > index start point
         # forward
-        label = data['label'].to(device)  # 데이터 device로 올리기
-        inputs = data['input'].to(device)
+        label = data['train'].to(device)  # 데이터 device로 올리기
+        inputs = data['target'].to(device)
         output = net(inputs)
 
         # backward
