@@ -80,6 +80,12 @@ class DiceLoss(nn.Module):
         self.ignore_index = ignore_index
 
     def forward(self, predict, target):
+        print('\n')
+        print(f"predict.shape : {predict.shape}")
+        print('\n')
+        print(f"target_shape : {target.shape}")
+        predict = predict.permute((0, 2, 3, 1))
+        print(f"modify predict_shape : {predict.shape}")
         assert predict.shape == target.shape, 'predict & target shape do not match'
         dice = BinaryDiceLoss(**self.kwargs)
         total_loss = 0

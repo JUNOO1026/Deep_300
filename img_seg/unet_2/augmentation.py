@@ -1,4 +1,5 @@
 import albumentations as album
+import numpy as np
 
 def get_training_augmentation():
     train_transform = [
@@ -41,3 +42,25 @@ def get_preprocessing(preprocessing_fn=None):
     _transform.append(album.Lambda(image=to_tensor, mask=to_tensor))
 
     return album.Compose(_transform)
+
+
+def one_hot_encode(label, label_values):
+    """
+    Convert a segmentation image label array to one-hot format
+    by replacing each pixel value with a vector of length num_classes
+    # Arguments
+        label: The 2D array segmentation image label
+        label_values
+
+    # Returns
+        A 2D array with the same width and hieght as the input, but
+        with a depth size of num_classes
+    """
+    semantic_map = []
+    for colour in label_values:
+        equality = np.equal(label, colour)
+        class_map = np.all(equality, axis=-1)
+        semantic_map.append(class_map)
+    semantic_map = np.stack(semantic_map, axis=-1)
+
+    return semantic_map
